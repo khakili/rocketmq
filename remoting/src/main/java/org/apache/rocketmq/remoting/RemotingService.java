@@ -17,7 +17,11 @@
 
 package org.apache.rocketmq.remoting;
 
+/**
+ * Remoting模块中的顶级接口，控制了Remoting模块的启动与停止。
+ */
 public interface RemotingService {
+    
     void start();
 
     void shutdown();

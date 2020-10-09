@@ -23,6 +23,11 @@ import org.apache.rocketmq.logging.InternalLoggerFactory;
 import org.apache.rocketmq.namesrv.NamesrvController;
 import org.apache.rocketmq.remoting.ChannelEventListener;
 
+/**
+ * Broker事件监听回调，在收到close，exception，idle时，触发
+ * org.apache.rocketmq.namesrv.routeinfo
+ * .RouteInfoManager#onChannelDestroy(java.lang.String, io.netty.channel.Channel)方法
+ */
 public class BrokerHousekeepingService implements ChannelEventListener {
     private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
     private final NamesrvController namesrvController;

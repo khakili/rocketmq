@@ -74,16 +74,16 @@ public class NamesrvController {
     }
 
     public boolean initialize() {
-
+        //读取kv配置
         this.kvConfigManager.load();
-
+        //启动NettyServer
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
 
         this.remotingExecutor =
             Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
         this.registerProcessor();
-
+        //定时扫描异常的broker（10秒一次）
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -91,7 +91,7 @@ public class NamesrvController {
                 NamesrvController.this.routeInfoManager.scanNotActiveBroker();
             }
         }, 5, 10, TimeUnit.SECONDS);
-
+        //定时打印所有Kv(10分钟一次)
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -99,7 +99,7 @@ public class NamesrvController {
                 NamesrvController.this.kvConfigManager.printAllPeriodically();
             }
         }, 1, 10, TimeUnit.MINUTES);
-
+        //如果配置了TLS，启动TLS文件监控，在文件有变动的时候，重新加载
         if (TlsSystemConfig.tlsMode != TlsMode.DISABLED) {
             // Register a listener to reload SslContext
             try {
@@ -152,6 +152,10 @@ public class NamesrvController {
         }
     }
 
+    /**
+     * 启动NameSrv
+     * @throws Exception
+     */
     public void start() throws Exception {
         this.remotingServer.start();
 
